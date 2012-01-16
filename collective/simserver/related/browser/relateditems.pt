@@ -1,0 +1,24 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="iwlearn.project">
+<body>
+  <metal:content-core fill-slot="content-core">
+    <metal:content-core define-macro="content-core">
+
+      <ol>
+        <li tal:repeat="item view/getsimilaritems">
+          <a tal:attributes="href item/url;
+                            title item/desc"
+             tal:content="item/title"> Title </a>
+          <i tal:content="item/similarity"> 0.8 </i>
+        </li>
+      </ol>
+
+
+
+    </metal:content-core>
+  </metal:content-core>
+
+</body>
+</html>

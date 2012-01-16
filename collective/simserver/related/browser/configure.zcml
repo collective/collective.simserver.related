@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="collective.simserver.core">
+
+    <include package="plone.app.contentmenu" />
+    <include package="Products.CMFCore" file="permissions.zcml" />
+    <include package="plone.app.registry" />
+
+    <browser:page
+      name="simserver-related-items.html"
+      for="*"
+      template="relateditems.pt"
+      class=".related.RelatedItemsView"
+      permission = "cmf.ModifyPortalContent" />
+
+</configure>
