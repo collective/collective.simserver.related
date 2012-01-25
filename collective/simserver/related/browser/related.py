@@ -63,10 +63,10 @@ class RelatedItemsView(BrowserView):
     def __call__(self):
         form = self.request.form
         if form.has_key('form.button.save'):
-            keywords = list(self.context.Subject())
-            keywords = keywords + form.get('subject', [])
-            keywords=list(set(keywords))
-            self.context.setSubject(keywords)
+            related = list(self.context.getRawRelatedItems())
+            related = related + form.get('UID', [])
+            #keywords=list(set(keywords))
+            self.context.setRelatedItems(related)
             self.request.response.redirect(self.context.absolute_url() + '/edit')
             return ''
         elif form.has_key('form.button.cancel'):
