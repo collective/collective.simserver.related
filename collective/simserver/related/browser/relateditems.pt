@@ -6,16 +6,35 @@
   <metal:content-core fill-slot="content-core">
     <metal:content-core define-macro="content-core">
 
+      <form method="post" class="enableFormTabbing"
+         tal:attributes="action string:${context/absolute_url}/${view/__name__}">
+
+
       <ol>
         <li tal:repeat="item view/getsimilaritems">
-          <a tal:attributes="href item/url;
+          <input type="checkbox"
+            id="uid-1"
+            value="abcde1234"
+            tal:attributes="id string:uid-${repeat/item/letter};
+                        value item/uid"
+            name="UID:list" />
+          <label for="uid-1"
+            tal:attributes="for string:uid-${repeat/item/letter}" >
+            <a tal:attributes="href item/url;
                             title item/desc"
-             tal:content="item/title"> Title </a>
-          <i tal:content="item/similarity"> 0.8 </i>
+                tal:content="item/title"> Title </a>
+            <i tal:content="item/similarity"> 0.8 </i>
+          </label>
         </li>
       </ol>
 
-
+            <div>
+                <input type="submit" class="context" name="form.button.save"
+                    value="Save" />
+                <input type="submit" class="context" name="form.button.cancel"
+                    value="Cancel" />
+            </div>
+        </form>
 
     </metal:content-core>
   </metal:content-core>

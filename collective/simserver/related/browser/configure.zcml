@@ -2,7 +2,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
-    i18n_domain="collective.simserver.core">
+    i18n_domain="collective.simserver.related">
 
     <include package="plone.app.contentmenu" />
     <include package="Products.CMFCore" file="permissions.zcml" />

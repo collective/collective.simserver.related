@@ -8,3 +8,6 @@ from collective.simserver.related import simserverMessageFactory as _
 class ISimserverLayer(IDefaultPloneLayer):
     """Marker interface that defines a Zope 3 browser layer.
     """
+
+class ISimserverCollection(interface.Interface):
+    """ Marker interface """

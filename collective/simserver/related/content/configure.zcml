@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    i18n_domain="collective.simserver.related">
+
+  <class class=".topic.SimserverTopic">
+    <require
+        permission="zope2.View"
+        interface="..interfaces.ISimserverCollection"
+        />
+
+  </class>
+
+
+</configure>
