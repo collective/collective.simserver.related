@@ -6,9 +6,9 @@
   <property name="title" i18n:translate="">SimserverTopic</property>
   <property name="description"
     i18n:translate="">Topic of similar items</property>
-  <property name="content_meta_type">SimserverTopic</property>
+  <property name="content_meta_type">ATTopic</property>
   <property name="product">collective.simserver.related</property>
- <property name="factory">addSimserverTopic</property>
+  <property name="factory">addSimserverTopic</property>
  <property name="immediate_view">atct_topic_view</property>
  <property name="global_allow">True</property>
  <property name="filter_content_types">True</property>

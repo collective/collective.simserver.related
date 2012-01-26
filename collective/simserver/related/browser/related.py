@@ -38,27 +38,29 @@ class RelatedItemsView(BrowserView):
         """ query simserver for related items, exclude self.context"""
         contextuid = self.context.UID()
         service = coreutils.SimService()
-        simserveritems = service.query([contextuid])
-        if contextuid in simserveritems:
-            suids =[s[0] for s in simserveritems[contextuid]
-                        if contextuid != s[0]]
-        else:
-            return []
-        brains = self.portal_catalog(UID = suids)
-        items = {}
-        for brain in brains:
-            items[brain.UID] = {'url': brain.getURL(),
-                    'uid': brain.UID,
-                    'title': brain.Title,
-                    'desc': brain.Description}
-        results = []
-        for item in simserveritems[contextuid]:
-            if item[0] in items:
-                result = {}
-                result = items[item[0]]
-                result['similarity'] = item[1]
-                results.append(result)
-        return results
+        reponse = service.query([contextuid])
+        if response['status'] == 'OK':
+            simserveritems = response['response']
+            if contextuid in simserveritems:
+                suids =[s[0] for s in simserveritems[contextuid]
+                            if contextuid != s[0]]
+            else:
+                return []
+            brains = self.portal_catalog(UID = suids)
+            items = {}
+            for brain in brains:
+                items[brain.UID] = {'url': brain.getURL(),
+                        'uid': brain.UID,
+                        'title': brain.Title,
+                        'desc': brain.Description}
+            results = []
+            for item in simserveritems[contextuid]:
+                if item[0] in items:
+                    result = {}
+                    result = items[item[0]]
+                    result['similarity'] = item[1]
+                    results.append(result)
+            return results
 
     def __call__(self):
         form = self.request.form
