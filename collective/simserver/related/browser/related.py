@@ -38,7 +38,8 @@ class RelatedItemsView(BrowserView):
         """ query simserver for related items, exclude self.context"""
         contextuid = self.context.UID()
         service = coreutils.SimService()
-        reponse = service.query([contextuid])
+        response = service.query([contextuid])
+        related = list(self.context.getRawRelatedItems())
         if response['status'] == 'OK':
             simserveritems = response['response']
             if contextuid in simserveritems:
@@ -49,10 +50,12 @@ class RelatedItemsView(BrowserView):
             brains = self.portal_catalog(UID = suids)
             items = {}
             for brain in brains:
+                isrelated = (brain.UID in related)
                 items[brain.UID] = {'url': brain.getURL(),
                         'uid': brain.UID,
                         'title': brain.Title,
-                        'desc': brain.Description}
+                        'desc': brain.Description,
+                        'isrelated':isrelated}
             results = []
             for item in simserveritems[contextuid]:
                 if item[0] in items:
@@ -66,8 +69,8 @@ class RelatedItemsView(BrowserView):
         form = self.request.form
         if form.has_key('form.button.save'):
             related = list(self.context.getRawRelatedItems())
-            related = related + form.get('UID', [])
-            #keywords=list(set(keywords))
+            related = related + [uid for uid in form.get('UID', [])
+                                    if uid not in related]
             self.context.setRelatedItems(related)
             self.request.response.redirect(self.context.absolute_url() + '/edit')
             return ''

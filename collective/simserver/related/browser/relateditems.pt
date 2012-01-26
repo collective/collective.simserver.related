@@ -16,6 +16,7 @@
             id="uid-1"
             value="abcde1234"
             tal:attributes="id string:uid-${repeat/item/letter};
+                        checked item/isrelated;
                         value item/uid"
             name="UID:list" />
           <label for="uid-1"
