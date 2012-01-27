@@ -23,8 +23,6 @@ class RelatedItemsView(BrowserView):
     """
     implements(IRelatedItemsView)
 
-    template = ViewPageTemplateFile('relateditems.pt')
-
     @property
     def portal_catalog(self):
         return getToolByName(self.context, 'portal_catalog')
@@ -65,6 +63,12 @@ class RelatedItemsView(BrowserView):
                     results.append(result)
             return results
 
+
+
+class RelatedItemsEdit(RelatedItemsView):
+
+    template = ViewPageTemplateFile('relateditems.pt')
+
     def __call__(self):
         form = self.request.form
         if form.has_key('form.button.save'):
@@ -78,4 +82,3 @@ class RelatedItemsView(BrowserView):
             self.request.response.redirect(self.context.absolute_url() + '/view')
             return ''
         return self.template()
-

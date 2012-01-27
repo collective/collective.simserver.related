@@ -9,10 +9,18 @@
     <include package="plone.app.registry" />
 
     <browser:page
-      name="simserver-related-items.html"
+      name="edit-simserver-related-items.html"
       for="*"
       template="relateditems.pt"
-      class=".related.RelatedItemsView"
+      class=".related.RelatedItemsEdit"
       permission = "cmf.ModifyPortalContent" />
+
+
+    <browser:page
+      name="view-simserver-related-items.html"
+      for="*"
+      template="relateditemsview.pt"
+      class=".related.RelatedItemsView"
+      permission="zope2.View" />
 
 </configure>

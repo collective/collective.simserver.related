@@ -1,4 +1,5 @@
 #
+from operator import itemgetter
 from zope.interface import implements
 import logging
 from Products.CMFCore.utils import getToolByName
@@ -67,12 +68,12 @@ class SimserverTopic(topic.ATTopic):
         """Invoke the catalog using our criteria to augment any passed
         in query before calling the catalog.
         """
-        baseresults = super(SimserverTopic, self).queryCatalog(*args, **kw)
+        basequery = self.buildQuery()
         portal_catalog = getToolByName(self, 'portal_catalog')
+        baseresults = portal_catalog.searchResults(basequery)
         uids = [brain.UID for brain in baseresults]
         service = SimService()
         min_score = self.getMin_score()
-        ##XXX min_similar = float(self.getMin_similar())/100.0
         response = service.query(documents=uids, min_score=min_score, max_results=200)
         if response['status']=='OK':
             indexed_documents = response['response'].keys()
@@ -111,7 +112,23 @@ class SimserverTopic(topic.ATTopic):
                 return portal_catalog(UID=unique_docs, sort_on=sort_on,
                                         sort_order=sort_order)
             else:
-                return portal_catalog(UID=unique_docs)
+                sim_relevance = {}
+                for values in response['response'].itervalues():
+                    for v in values:
+                        rel = sim_relevance.get(v[0],0)
+                        rel += v[1]
+                        sim_relevance[v[0]] = rel
+                by_relevance = sorted(sim_relevance.items(),
+                        key=itemgetter(1), reverse=True)
+                brains= portal_catalog(UID=unique_docs)
+                uid_brains ={}
+                for brain in brains:
+                    uid_brains[brain.UID] = brain
+                result = []
+                for r in by_relevance:
+                    if r[0] in uid_brains:
+                        result.append(uid_brains[r[0]])
+                return result
 
 
 
