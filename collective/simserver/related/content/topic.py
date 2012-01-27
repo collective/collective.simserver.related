@@ -97,6 +97,9 @@ class SimserverTopic(topic.ATTopic):
                 for doc in indexed_documents:
                     if doc in unique_docs:
                         unique_docs.remove(doc)
+                for doc in uids:
+                    if doc in unique_docs:
+                        unique_docs.remove(doc)
             else:
                 unique_docs += uids
             if self.hasSortCriterion():
