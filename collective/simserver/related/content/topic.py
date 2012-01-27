@@ -2,8 +2,9 @@
 from operator import itemgetter
 from zope.interface import implements
 import logging
-from Products.CMFCore.utils import getToolByName
 
+from Products.ZCatalog.Lazy import LazyCat
+from Products.CMFCore.utils import getToolByName
 from Products.Archetypes import atapi
 from Products.ATContentTypes.content import topic
 from Products.ATContentTypes.content import schemata
@@ -69,6 +70,8 @@ class SimserverTopic(topic.ATTopic):
         in query before calling the catalog.
         """
         basequery = self.buildQuery()
+        if basequery is None:
+            return LazyCat([[]])
         portal_catalog = getToolByName(self, 'portal_catalog')
         baseresults = portal_catalog.searchResults(basequery)
         uids = [brain.UID for brain in baseresults]
