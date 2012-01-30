@@ -9,28 +9,30 @@
   <property name="content_meta_type">ATTopic</property>
   <property name="product">collective.simserver.related</property>
   <property name="factory">addSimserverTopic</property>
- <property name="immediate_view">atct_topic_view</property>
+  <property name="content_icon">topic_icon.png</property>
+  <property name="immediate_view">atct_edit</property>
  <property name="global_allow">True</property>
  <property name="filter_content_types">True</property>
  <property name="allowed_content_types"></property>
  <property name="allow_discussion">False</property>
  <property name="default_view">atct_topic_view</property>
- <property name="view_methods">
-  <element value="folder_listing"/>
+ <property name="view_methods" purge="False">
+  <!--element value="folder_listing"/>
   <element value="folder_summary_view"/>
   <element value="folder_full_view"/>
   <element value="folder_tabular_view"/>
   <element value="atct_album_view"/>
-  <element value="atct_topic_view"/>
+  <element value="atct_topic_view" /-->
+  <element value="simserver-tag-related.html" />
  </property>
  <alias from="(Default)" to="(dynamic view)"/>
  <alias from="edit" to="atct_edit"/>
  <alias from="sharing" to="@@sharing"/>
  <alias from="view" to="(selected layout)"/>
  <action title="View" action_id="view" category="object" condition_expr=""
-    url_expr="string:${folder_url}/" visible="True"
+    url_expr="string:${folder_url}/simserver-tag-related.html" visible="True"
     i18n:attributes="title">
-  <permission value="View"/>
+  <permission value="Modify portal content" />
  </action>
  <action title="Edit" action_id="edit" category="object" condition_expr="not:object/@@plone_lock_info/is_locked_for_current_user|python:True"
     url_expr="string:${object_url}/edit" visible="True"

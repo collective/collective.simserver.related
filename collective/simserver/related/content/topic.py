@@ -174,8 +174,4 @@ class SimserverTopic(topic.ATTopic):
 
 
 
-
-
-
-
 atapi.registerType(SimserverTopic, PROJECTNAME)

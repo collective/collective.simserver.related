@@ -23,4 +23,18 @@
       class=".related.RelatedItemsView"
       permission="zope2.View" />
 
+    <browser:page
+      name="simserver-tag-related.html"
+      for="collective.simserver.related.interfaces.ISimserverCollection"
+      template="tagedit.pt"
+      class=".tagedit.TagSimilar"
+      permission="cmf.ModifyPortalContent" />
+
+    <browser:page
+      name="simserver-set-related.html"
+      for="Products.ATContentTypes.interfaces.topic.IATTopic"
+      class=".actions.SetRelatedForm"
+      permission = "cmf.ModifyPortalContent" />
+
+
 </configure>

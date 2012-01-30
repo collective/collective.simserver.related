@@ -1,0 +1,81 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="iwlearn.project">
+<body>
+  <metal:content-core fill-slot="content-core">
+    <metal:content-core define-macro="content-core">
+
+      <form method="post" class="enableFormTabbing"
+         tal:attributes="action string:${context/absolute_url}/${view/__name__}"
+         tal:define="results view/results;
+                    Batch python:modules['Products.CMFPlone'].Batch;
+                    b_size view/item_count; b_size request/b_size | b_size;
+                    b_start python:0;b_start request/b_start | b_start;">
+
+        <strong i18n:translate="description_no_results_found"
+            tal:condition="not: results">
+            No results were found.
+        </strong>
+
+        <div tal:condition="results" >
+        <dl tal:define="batch python:Batch(results, b_size, int(b_start), orphan=1);">
+          <tal:loop tal:repeat="result batch">
+            <dt>
+              <input type="checkbox"
+              id="uid-1"
+              value="abcde1234"
+              tal:attributes="id string:uid-${repeat/result/letter};
+                        value result/UID"
+              name="UID:list" />
+              <label for="uid-1"
+               tal:attributes="for string:uid-${repeat/result/letter}" >
+                <a tal:attributes="href result/getURL;"
+                    tal:content="result/Title"> Title </a>
+              </label>
+            </dt>
+            <dd>
+              <div tal:content="result/Description"> Description </div>
+              <span tal:define="tags result/Subject|nothing"
+                    tal:condition="tags">
+                    &mdash;
+                <tal:filedunder i18n:translate="label_filed_under">Filed under:</tal:filedunder>
+                <span tal:repeat="tag tags">
+                    <a href=""
+                       class="link-tag"
+                       rel="tag"
+                       tal:content="tag"
+                       tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/search?Subject%3Alist=${tag}">
+                       Tag
+                    </a>
+                    <tal:separator condition="not: repeat/tag/end">,
+                    </tal:separator>
+                </span>
+              </span>
+            </dd>
+          </tal:loop>
+        </dl>
+        <!--div metal:use-macro="context/batch_macros/macros/navigation" /-->
+        </div>
+
+        <div tal:condition="results">
+            <label for="add-tags-to-selected">Add to all</label>
+            <div class="formHelp">
+            Add this tag to all selected items, you can assign multiple
+            tags at once, delimited by semicolons
+            </div>
+            <input type="text" size="40" name="tags"
+                id="add-tags-to-selected"
+                tal:attributes="value view/getTags" />
+            <input type="submit" class="context" name="form.button.save"
+                value="Apply tag to selected items" />
+            <input type="submit" class="context" name="form.button.cancel"
+                value="Cancel" />
+        </div>
+      </form>
+
+
+    </metal:content-core>
+  </metal:content-core>
+</body>
+</html>
