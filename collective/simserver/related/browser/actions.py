@@ -88,9 +88,11 @@ class SetRelatedForm(formbase.PageForm):
                         continue
                     if len(new_related[:max_results]) > len(related):
                         ob.setRelatedItems(new_related[:max_results])
-                        logger.info('set %i new relations to %s' %
+                        logger.info('set %i new relations to "%s"' %
                             (len(new_related[:max_results]) - len(related),
                              brain.Title))
+            elif response['status'] == 'NOTFOUND':
+                logger.info('document "%s" not in index' % brain.Title)
             else:
                 IStatusMessage(self.request).addStatusMessage(
                         response['response'], type='error')

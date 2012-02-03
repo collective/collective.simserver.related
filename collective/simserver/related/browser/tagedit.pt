@@ -62,7 +62,7 @@
             <label for="add-tags-to-selected">Add to all</label>
             <div class="formHelp">
             Add this tag to all selected items, you can assign multiple
-            tags at once, delimited by semicolons
+            tags at once, delimited by semicolons.
             </div>
             <input type="text" size="40" name="tags"
                 id="add-tags-to-selected"
