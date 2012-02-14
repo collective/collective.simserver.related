@@ -21,6 +21,7 @@ class RelatedItemsView(BrowserView):
     """
     RelatedItems browser view
     """
+    #XXX This needs some caching
     implements(IRelatedItemsView)
 
     @property

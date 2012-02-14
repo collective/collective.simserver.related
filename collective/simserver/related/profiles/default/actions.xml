@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
-<object name="portal_actions">
+<object name="portal_actions" xmlns:i18n="http://xml.zope.org/namespaces/i18n">
   <object name="object_buttons">
-    <object name="topic_set_similar_related" meta_type="CMF Action">
-      <property name="title">Set related items</property>
-      <property name="description"/>
+    <object name="topic_set_similar_related" meta_type="CMF Action"
+            i18n:domain="collective.simserver.related">
+      <property name="title" i18n:translate="">Set related items</property>
+      <property name="description" i18n:translate=""/>
       <property name="url_expr">string:${object_url}/@@simserver-set-related.html</property>
       <property name="icon_expr"/>
       <property name="available_expr">python:object.meta_type in ('ATTopic')</property>
@@ -12,14 +13,29 @@
       </property>
       <property name="visible">True</property>
     </object>
-    <object name="item_set_similar_related" meta_type="CMF Action">
-      <property name="title">relate similar items</property>
-      <property name="description"/>
+    <object name="item_set_similar_related" meta_type="CMF Action"
+            i18n:domain="collective.simserver.related">
+      <property name="title" i18n:translate="">Relate similar items</property>
+      <property name="description" i18n:translate=""/>
       <property name="url_expr">string:${object_url}/@@edit-simserver-related-items.html</property>
       <property name="icon_expr"/>
       <property name="available_expr"></property>
       <property name="permissions">
         <element value="Modify portal content"/>
+      </property>
+      <property name="visible">True</property>
+    </object>
+  </object>
+  <object name="document_actions" meta_type="CMF Action Category">
+    <object name="item_view_similar" meta_type="CMF Action"
+            i18n:domain="collective.simserver.related">
+      <property name="title" i18n:translate="">Similar items</property>
+      <property name="description" i18n:translate=""/>
+      <property name="url_expr">string:${object_url}/@@view-simserver-related-items.html</property>
+      <property name="icon_expr"/>
+      <property name="available_expr"></property>
+      <property name="permissions">
+        <element value="View"/>
       </property>
       <property name="visible">True</property>
     </object>
