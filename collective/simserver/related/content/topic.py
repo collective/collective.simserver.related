@@ -34,7 +34,8 @@ SimserverTopicSchema = topic.ATTopicSchema.copy() + atapi.Schema((
         validators=('isDecimal'),
     ),
 
-    atapi.IntegerField( 'min_similar',
+    atapi.IntegerField(
+        'min_similar',
         required = True,
         default = 30,
         widget = atapi.IntegerWidget(
@@ -50,7 +51,7 @@ SimserverTopicSchema = topic.ATTopicSchema.copy() + atapi.Schema((
     atapi.BooleanField(
         'exclude_orig',
         required=False,
-        searchable=True,
+        searchable=False,
         default=False,
         widget=atapi.BooleanWidget(
             label=_(u"Show related only"),
@@ -62,7 +63,7 @@ SimserverTopicSchema = topic.ATTopicSchema.copy() + atapi.Schema((
     atapi.LinesField(
         'citerions_to_apply',
         required=False,
-        searchable=True,
+        searchable=False,
         vocabulary_factory = u"simserver.topic.critirea",
         widget=atapi.InAndOutWidget(
             label=_(u"Apply to result also"),

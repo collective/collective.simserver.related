@@ -15,13 +15,9 @@
  <property name="filter_content_types">True</property>
  <property name="allowed_content_types"></property>
  <property name="allow_discussion">False</property>
- <property name="default_view">atct_topic_view</property>
+ <property name="default_view">simserver-view-related.html</property>
  <property name="view_methods" purge="False">
-  <element value="folder_listing"/>
-  <element value="folder_summary_view"/>
-  <element value="folder_full_view"/>
-  <element value="folder_tabular_view"/>
-  <element value="atct_album_view"/>
+  <element value="simserver-view-related.html"/>
   <element value="atct_topic_view" />
   <element value="simserver-tag-related.html" />
  </property>
@@ -30,7 +26,7 @@
  <alias from="sharing" to="@@sharing"/>
  <alias from="view" to="(selected layout)"/>
  <action title="View" action_id="view" category="object" condition_expr=""
-    url_expr="string:${folder_url}/simserver-tag-related.html" visible="True"
+    url_expr="string:${folder_url}/" visible="True"
     i18n:attributes="title">
   <permission value="Modify portal content" />
  </action>

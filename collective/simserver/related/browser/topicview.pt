@@ -6,9 +6,7 @@
   <metal:content-core fill-slot="content-core">
     <metal:content-core define-macro="content-core">
 
-      <form method="post" class="enableFormTabbing"
-         tal:attributes="action string:${context/absolute_url}/${view/__name__}"
-         tal:define="results view/results;
+      <div tal:define="results view/results;
                     Batch python:modules['Products.CMFPlone'].Batch;
                     b_size view/item_count; b_size request/b_size | b_size;
                     b_start python:0;b_start request/b_start | b_start;">
@@ -24,17 +22,8 @@
               <tal:loop tal:repeat="result batch">
                 <dt tal:define="item_icon python:plone_view.getIcon(result);">
                   <img tal:replace="structure item_icon/html_tag" />
-                  <input type="checkbox"
-                  id="uid-1"
-                  value="abcde1234"
-                  tal:attributes="id string:uid-${repeat/result/letter};
-                            value result/UID"
-                  name="UID:list" />
-                  <label for="uid-1"
-                   tal:attributes="for string:uid-${repeat/result/letter}" >
-                    <a tal:attributes="href result/getURL;"
+                  <a tal:attributes="href result/getURL;"
                         tal:content="result/Title"> Title </a>
-                  </label>
                 </dt>
                 <dd>
                   <div tal:content="result/Description"> Description </div>
@@ -59,24 +48,7 @@
             </dl>
             <div metal:use-macro="context/batch_macros/macros/navigation" />
         </div>
-
-        <div tal:condition="results">
-            <label for="add-tags-to-selected">Add to all</label>
-            <div class="formHelp">
-            Add this tag to all selected items, you can assign multiple
-            tags at once, delimited by semicolons.
-            </div>
-            <input type="text" size="40" name="tags"
-                id="add-tags-to-selected"
-                tal:attributes="value view/getTags" />
-            <input type="submit" class="context" name="form.button.save"
-                value="Apply tag to selected items" />
-            <input type="submit" class="context" name="form.button.cancel"
-                value="Cancel" />
-        </div>
-      </form>
-
-
+      </div>
     </metal:content-core>
   </metal:content-core>
 </body>

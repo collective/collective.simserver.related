@@ -8,6 +8,25 @@
     <include package="Products.CMFCore" file="permissions.zcml" />
     <include package="plone.app.registry" />
 
+
+
+  <browser:menuItem
+      title="View"
+      for="collective.simserver.related.interfaces.ISimserverCollection"
+      menu="plone_displayviews"
+      action="simserver-view-related.html"
+      description="View Similar items"
+      />
+
+  <browser:menuItem
+      title="Tag edit"
+      for="collective.simserver.related.interfaces.ISimserverCollection"
+      menu="plone_displayviews"
+      action="simserver-tag-related.html"
+      description="Tag Similar items"
+      />
+
+
     <browser:page
       name="edit-simserver-related-items.html"
       for="*"
@@ -29,6 +48,13 @@
       template="tagedit.pt"
       class=".tagedit.TagSimilar"
       permission="cmf.ModifyPortalContent" />
+
+    <browser:page
+      name="simserver-view-related.html"
+      for="collective.simserver.related.interfaces.ISimserverCollection"
+      template="topicview.pt"
+      class=".topicview.SimilarTopicView"
+      permission="zope2.View" />
 
     <browser:page
       name="simserver-set-related.html"
