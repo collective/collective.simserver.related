@@ -34,6 +34,8 @@
                     value="Save" />
                 <input type="submit" class="context" name="form.button.cancel"
                     value="Cancel" />
+                <input type="submit" class="context" name="form.button.reindex"
+                    value="(Re-) Index this item" />
             </div>
         </form>
 

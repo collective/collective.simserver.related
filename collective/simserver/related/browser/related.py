@@ -5,6 +5,7 @@ from zope.interface import implements, Interface
 from Products.Five import BrowserView
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.CMFCore.utils import getToolByName
+from Products.statusmessages.interfaces import IStatusMessage
 
 from collective.simserver.core import utils as coreutils
 
@@ -82,4 +83,17 @@ class RelatedItemsEdit(RelatedItemsView):
         elif form.has_key('form.button.cancel'):
             self.request.response.redirect(self.context.absolute_url() + '/view')
             return ''
+        elif form.has_key('form.button.reindex'):
+            id = self.context.getId()
+            text = self.context.SearchableText()
+            text = text.strip()
+            text = text.lstrip(id).lstrip()
+            text = text.decode('utf-8', 'ignore')
+            text = text.encode('utf-8')
+            uid = self.context.UID()
+            service = coreutils.SimService()
+            response = service.index([{'id': uid, 'text': text}])
+            status = str(response)
+            IStatusMessage(self.request).addStatusMessage(status,
+                type='info')
         return self.template()
