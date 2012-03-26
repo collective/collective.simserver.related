@@ -20,8 +20,12 @@
                         value item/uid"
             name="UID:list" />
           <label for="uid-1"
+            tal:define="item_wf_state_class string:state-${item/state};"
             tal:attributes="for string:uid-${repeat/item/letter}" >
+            <img tal:attributes="src string:${portal_url}/${item/icon};
+                    alt item/icon"/>
             <a tal:attributes="href item/url;
+                            class string:$item_wf_state_class;
                             title item/desc"
                 tal:content="item/title"> Title </a>
             <i tal:content="item/similarity"> 0.8 </i>

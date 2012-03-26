@@ -55,6 +55,8 @@ class RelatedItemsView(BrowserView):
                         'uid': brain.UID,
                         'title': brain.Title,
                         'desc': brain.Description,
+                        'state': brain.review_state,
+                        'icon': brain.getIcon,
                         'isrelated':isrelated}
             results = []
             for item in simserveritems[contextuid]:
