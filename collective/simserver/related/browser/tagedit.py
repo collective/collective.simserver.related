@@ -25,6 +25,11 @@ class TagSimilar(BrowserView):
 
     template = ViewPageTemplateFile('tagedit.pt')
 
+    @property
+    def portal_catalog(self):
+        return getToolByName(self.context, 'portal_catalog')
+
+
     def getTags(self):
         """ return tags defined by subject criterion if any """
         criteria = self.context.listCriteria()
