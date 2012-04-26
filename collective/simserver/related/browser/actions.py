@@ -35,6 +35,17 @@ class ISetRelatedForm(interface.Interface):
         max = 50,
         )
 
+    max_related = schema.Int(
+        title= _(u'Skip objects with x or more related items'),
+        description = _(u'Do not add additional items if the object allready has this much related items'),
+        required = True,
+        readonly = False,
+        default = 5,
+        min = 1,
+        max = 50,
+        )
+
+
     same_query = schema.Bool(
         title= _(u"Same query"),
         description= _(u"Relate only to results that appear in this topic"),
@@ -64,6 +75,7 @@ class SetRelatedForm(formbase.PageForm):
         min_score = data['min_score']
         same_query = data['same_query']
         max_results = data['max_results']
+        max_related = data['max_related']
         basequery = self.context.buildQuery()
         if basequery is None:
             return LazyCat([[]])
@@ -71,6 +83,8 @@ class SetRelatedForm(formbase.PageForm):
         uids = [brain.UID for brain in baseresults]
         service = SimService()
         for brain in baseresults:
+            if len(brain.getRawRelatedItems) >= max_related:
+                continue
             response = service.query(brain.UID, min_score=min_score)
             if response['status'] == 'OK':
                 simserveritems = response['response']
@@ -79,14 +93,14 @@ class SetRelatedForm(formbase.PageForm):
                 if same_query:
                     suids =[s for s in suids if s in uids]
                 if suids:
-                    ob = brain.getObject()
-                    related = list(ob.getRawRelatedItems())
+                    related = brain.getRawRelatedItems
                     if len(related) < max_results:
                         new_related = related +[s for s in suids
                                         if s not in related]
                     else:
                         continue
                     if len(new_related[:max_results]) > len(related):
+                        ob = brain.getObject()
                         ob.setRelatedItems(new_related[:max_results])
                         logger.info('set %i new relations to "%s"' %
                             (len(new_related[:max_results]) - len(related),

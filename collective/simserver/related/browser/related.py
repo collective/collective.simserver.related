@@ -40,32 +40,52 @@ class RelatedItemsView(BrowserView):
         service = coreutils.SimService()
         response = service.query([contextuid])
         related = list(self.context.getRawRelatedItems())
+        items = {}
         if response['status'] == 'OK':
             simserveritems = response['response']
             if contextuid in simserveritems:
                 suids =[s[0] for s in simserveritems[contextuid]
                             if contextuid != s[0]]
-            else:
-                return []
-            brains = self.portal_catalog(UID = suids)
-            items = {}
+            if suids:
+                brains = self.portal_catalog(UID = suids)
+                for brain in brains:
+                    isrelated = (brain.UID in related)
+                    items[brain.UID] = {'url': brain.getURL(),
+                            'uid': brain.UID,
+                            'title': brain.Title,
+                            'desc': brain.Description,
+                            'state': brain.review_state,
+                            'icon': brain.getIcon,
+                            'isrelated':isrelated}
+        else:
+            simserveritems = {contextuid : []}
+        results = []
+        nsuids =[] #related items not returned by similarity index
+        for ruid in related:
+            if ruid not in items:
+                nsuids.append(ruid)
+        # add items that are related items but not
+        # in the similarity results to the results
+        if nsuids:
+            brains = self.portal_catalog(UID = nsuids)
             for brain in brains:
-                isrelated = (brain.UID in related)
-                items[brain.UID] = {'url': brain.getURL(),
-                        'uid': brain.UID,
-                        'title': brain.Title,
-                        'desc': brain.Description,
-                        'state': brain.review_state,
-                        'icon': brain.getIcon,
-                        'isrelated':isrelated}
-            results = []
-            for item in simserveritems[contextuid]:
-                if item[0] in items:
-                    result = {}
-                    result = items[item[0]]
-                    result['similarity'] = item[1]
-                    results.append(result)
-            return results
+                result = {'url': brain.getURL(),
+                    'uid': brain.UID,
+                    'title': brain.Title,
+                    'desc': brain.Description,
+                    'state': brain.review_state,
+                    'icon': brain.getIcon,
+                    'similarity' : 'N/A',
+                    'isrelated':True}
+                results.append(result)
+
+        for item in simserveritems[contextuid]:
+            if item[0] in items:
+                result = {}
+                result = items[item[0]]
+                result['similarity'] = item[1]
+                results.append(result)
+        return results
 
 
 
@@ -76,11 +96,9 @@ class RelatedItemsEdit(RelatedItemsView):
     def __call__(self):
         form = self.request.form
         if form.has_key('form.button.save'):
-            related = list(self.context.getRawRelatedItems())
-            related = related + [uid for uid in form.get('UID', [])
-                                    if uid not in related]
+            related = [uid for uid in form.get('UID', [])]
             self.context.setRelatedItems(related)
-            self.request.response.redirect(self.context.absolute_url() + '/edit')
+            self.request.response.redirect(self.context.absolute_url() + '/view')
             return ''
         elif form.has_key('form.button.cancel'):
             self.request.response.redirect(self.context.absolute_url() + '/view')
