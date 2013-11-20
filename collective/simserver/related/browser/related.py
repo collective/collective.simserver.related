@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from collections import defaultdict
+from operator import itemgetter
+
 import logging
 from zope.interface import implements, Interface
 
@@ -24,6 +27,7 @@ class RelatedItemsView(BrowserView):
     """
     #XXX This needs some caching
     implements(IRelatedItemsView)
+    tags = None
 
     @property
     def portal_catalog(self):
@@ -38,25 +42,37 @@ class RelatedItemsView(BrowserView):
         """ query simserver for related items, exclude self.context"""
         contextuid = self.context.UID()
         service = coreutils.SimService()
+        max_votes = 3
+        intervall = (1 - service.min_score) / max_votes
         response = service.query([contextuid])
         related = list(self.context.getRawRelatedItems())
         items = {}
+        tags = []
+        similarities = {}
         if response['status'] == 'OK':
             simserveritems = response['response']
             if contextuid in simserveritems:
-                suids =[s[0] for s in simserveritems[contextuid]
-                            if contextuid != s[0]]
-            if suids:
-                brains = self.portal_catalog(UID = suids)
+                for item in simserveritems[contextuid]:
+                    if contextuid != item[0]:
+                        similarities[item[0]] = item[1]
+            if similarities:
+                brains = self.portal_catalog(UID = similarities.keys())
                 for brain in brains:
                     isrelated = (brain.UID in related)
+                    similarity = similarities.get(brain.UID, 0)
                     items[brain.UID] = {'url': brain.getURL(),
                             'uid': brain.UID,
                             'title': brain.Title,
                             'desc': brain.Description,
                             'state': brain.review_state,
                             'icon': brain.getIcon,
+                            'similarity': similarity,
+                            'tags': brain.Subject,
                             'isrelated':isrelated}
+                    if brain.Subject:
+                        #votes = 1
+                        votes = int((similarity -  service.min_score) /intervall) + 1
+                        tags += votes * brain.Subject
         else:
             simserveritems = {contextuid : []}
         results = []
@@ -66,6 +82,7 @@ class RelatedItemsView(BrowserView):
                 nsuids.append(ruid)
         # add items that are related items but not
         # in the similarity results to the results
+
         if nsuids:
             brains = self.portal_catalog(UID = nsuids)
             for brain in brains:
@@ -75,16 +92,17 @@ class RelatedItemsView(BrowserView):
                     'desc': brain.Description,
                     'state': brain.review_state,
                     'icon': brain.getIcon,
+                    'tags': brain.Subject,
                     'similarity' : 'N/A',
                     'isrelated':True}
                 results.append(result)
-
+                if brain.Subject:
+                    tags += max_votes * brain.Subject
+        # sort the items by similarity and append to results
         for item in simserveritems[contextuid]:
             if item[0] in items:
-                result = {}
-                result = items[item[0]]
-                result['similarity'] = item[1]
-                results.append(result)
+                results.append(items[item[0]])
+        self.tags = tags
         return results
 
 
@@ -93,12 +111,38 @@ class RelatedItemsEdit(RelatedItemsView):
 
     template = ViewPageTemplateFile('relateditems.pt')
 
+    def get_tags(self):
+        has_tags = self.context.Subject()
+        if not has_tags:
+            has_tages = []
+        counts = defaultdict(int)
+        for tag in self.tags:
+            counts[tag] += 1
+        weighted = []
+        for tag, occurences in counts.items():
+            if tag in has_tags:
+                istag = True
+            else:
+                istag = False
+            weighted.append({'tag': tag, 'istag': istag,
+                'freq': float(occurences)/len(self.tags)})
+        for t in has_tags:
+            if t not in counts:
+                weighted.append({'tag': tag, 'istag': istag,
+                    'freq': 1})
+        weighted.sort(key=itemgetter('freq'), reverse=True)
+        return weighted
+
     def __call__(self):
         form = self.request.form
         if form.has_key('form.button.save'):
             related = [uid for uid in form.get('UID', [])]
-            self.context.setRelatedItems(related)
+            if related:
+                self.context.setRelatedItems(related)
             self.request.response.redirect(self.context.absolute_url() + '/view')
+            tags = [tag for tag in form.get('Subject', [])]
+            if tags:
+                self.context.setSubject(tags)
             return ''
         elif form.has_key('form.button.cancel'):
             self.request.response.redirect(self.context.absolute_url() + '/view')

@@ -5,46 +5,62 @@
 <body>
   <metal:content-core fill-slot="content-core">
     <metal:content-core define-macro="content-core">
-
       <form method="post" class="enableFormTabbing"
          tal:attributes="action string:${context/absolute_url}/${view/__name__}">
-
-
-      <ol>
-        <li tal:repeat="item view/getsimilaritems">
-          <input type="checkbox"
-            id="uid-1"
-            value="abcde1234"
-            tal:attributes="id string:uid-${repeat/item/letter};
-                        checked item/isrelated;
-                        value item/uid"
-            name="UID:list" />
-          <label for="uid-1"
-            tal:define="item_wf_state_class string:state-${item/state};"
-            tal:attributes="for string:uid-${repeat/item/letter}" >
-            <img tal:attributes="src string:${portal_url}/${item/icon};
-                    alt item/icon"/>
-            <a tal:attributes="href item/url;
-                            class string:$item_wf_state_class;
-                            title item/desc"
-                tal:content="item/title"> Title </a>
-            <i tal:content="item/similarity"> 0.8 </i>
-          </label>
-        </li>
-      </ol>
-
-            <div>
-                <input type="submit" class="context" name="form.button.save"
+        <fieldset>
+          <legend>Similar items</legend>
+          <ol>
+            <li tal:repeat="item view/getsimilaritems">
+              <input type="checkbox"
+                id="uid-1"
+                value="abcde1234"
+                tal:attributes="id string:uid-${repeat/item/letter};
+                            checked item/isrelated;
+                            value item/uid"
+                name="UID:list" />
+              <label for="uid-1"
+                tal:define="item_wf_state_class string:state-${item/state};"
+                tal:attributes="for string:uid-${repeat/item/letter}" >
+                <img tal:attributes="src string:${portal_url}/${item/icon};
+                        alt item/icon"/>
+                <a tal:attributes="href item/url;
+                                class string:$item_wf_state_class;
+                                title item/desc"
+                    tal:content="item/title"> Title </a>
+                <i tal:content="item/similarity"> 0.8 </i>
+              </label>
+            </li>
+          </ol>
+        </fieldset>
+        <fieldset>
+          <legend>Suggested tags</legend>
+          <ul>
+            <li tal:repeat="tag view/get_tags">
+              <input type="checkbox"
+                id="tag-1"
+                value="abcde1234"
+                tal:attributes="id string:tag-${repeat/tag/letter};
+                            checked tag/istag;
+                            value tag/tag"
+                name="Subject:list" />
+              <label for="uid-1"
+                tal:attributes="for string:tag-${repeat/tag/letter}" >
+                <span tal:replace="tag/tag"> Subject </span>
+                <i tal:content="tag/freq"> 0.8 </i>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+          <div>
+             <input type="submit" class="context" name="form.button.save"
                     value="Save" />
-                <input type="submit" class="context" name="form.button.cancel"
+             <input type="submit" class="context" name="form.button.cancel"
                     value="Cancel" />
-                <input type="submit" class="context" name="form.button.reindex"
+             <input type="submit" class="context" name="form.button.reindex"
                     value="(Re-) Index this item" />
-            </div>
-        </form>
-
+          </div>
+      </form>
     </metal:content-core>
   </metal:content-core>
-
 </body>
 </html>
